@@ -13,7 +13,7 @@ jobs:
           sudo timedatectl set-timezone Asia/Shanghai
           wget -qO /opt/sdk.tar.xz https://downloads.openwrt.org/releases/22.03.5/targets/rockchip/armv8/openwrt-sdk-22.03.5-rockchip-armv8_gcc-11.2.0_musl.Linux-x86_64.tar.xz
           tar -xJf /opt/sdk.tar.xz -C /opt
-          git clone https://github.com/oxygeny/luci-app-airoha-npu.git /opt/alist
+          git clone -b oxygeny https://github.com/oxygeny/luci-app-airoha-npu.git /opt/alist
           cd /opt/openwrt-sdk*/package
           cp -R /opt/alist/luci-app-airoha-npu .
           cd /opt/openwrt-sdk*
