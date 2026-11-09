@@ -33,7 +33,7 @@ jobs:
           cd /opt/openwrt-sdk*
           make package/luci-app-airoha-npu/compile V=s -j$(nproc)
           # 重点：匹配apk而不是ipk
-          APK_PATH=$(find bin/packages/aarch64_generic/base -name "luci-app-airoha-npu*.apk")
+          APK_PATH=$(find bin/packages/aarch64_cortex-a53/base -name "luci-app-airoha-npu*.apk")
           echo "APK=$APK_PATH" >> $GITHUB_ENV
           ls -lh $APK_PATH
           echo "build_time=$(date '+%Y年%m月%d日%H:%M:%S' | jq -sRr @uri)" >> $GITHUB_ENV
@@ -46,7 +46,7 @@ jobs:
           body: |
              > 
 
-             **架构：aarch64_generic（Airoha AN7583）**
+             **架构：aarch64_cortex-a53（Airoha AN7583）**
              ✅ OpenWrt main / 25.12+ APK包
              路由器安装命令：`apk add ./luci-app-airoha-npu_xxx.apk`
           tag_name: ${{ env.tag }}
