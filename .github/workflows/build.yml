@@ -37,6 +37,7 @@ jobs:
       - name: Compile luci‑app
         run: |
           set -e
+          cd /opt/openwrt-sdk*
           make package/luci-app-airoha-npu/compile V=s
           APK_FILE=$(find . -name "luci-app-airoha-npu*.apk")
           if [ -z "$APK_FILE" ]; then
