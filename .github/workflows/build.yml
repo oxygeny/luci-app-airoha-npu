@@ -39,12 +39,13 @@ jobs:
           set -e
           cd /opt/openwrt-sdk*
           make package/luci-app-airoha-npu/compile V=s
-          APK_FILE=$(find . -name "luci-app-airoha-npu*.apk")
+          APK_FILE=$(find /opt/openwrt-sdk* -name "luci-app-airoha-npu*.apk")
           if [ -z "$APK_FILE" ]; then
             echo "::error::apk编译产物缺失"
             exit 1
           fi
           echo "APK=$APK_FILE"
+          cd -
           cp "$APK_FILE" ./luci-app-airoha-npu.apk
 
       - name: Upload apk as artifact
