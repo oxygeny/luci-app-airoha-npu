@@ -35,23 +35,23 @@ jobs:
           ./scripts/feeds install -a
           make defconfig
 
-      - name: 编译，找apk包
+      - name: Compile luci-app
         run: |
+          set -e
           cd /opt/openwrt-sdk*
-          make package/luci-app-airoha-npu/compile V=s -j$(nproc)
-          # 重点：匹配apk而不是ipk
-          APK_PATH=$(find bin/packages/aarch64_cortex-a53/base -name "luci-app-airoha-npu*.apk")
-          echo "APK=$APK_PATH" >> $GITHUB_ENV
-          ls -lh $APK_PATH
-          echo "build_time=$(date '+%Y年%m月%d日%H:%M:%S' | jq -sRr @uri)" >> $GITHUB_ENV
-          echo "tag=$(date '+%Y-%m-%d-%H%M')" >> $GITHUB_ENV
+          make package/luci-app-airoha-npu/compile V=s
+          APK_FILE=$(find . -name "luci-app-airoha-npu*.apk")
+          if [ -z "$APK_FILE" ]; then
+            echo "::error::apk 编译产物缺失"
+            exit 1
+          fi
+          echo "APK_FILE=${APK_FILE}" >> $GITHUB_ENV
+          echo "RELEASE_TAG=${{ github.event.inputs.release_tag }}" >> $GITHUB_ENV
 
-      - name: Release
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag_name: ${{ github.sha }}
-          name: Build release
-          files: ${{ env.APK }}
+          tag_name: ${{ env.RELEASE_TAG }}
+          files: ${{ env.APK_FILE }}
+          generate_release_notes: true
