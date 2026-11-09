@@ -3,6 +3,11 @@ permissions:
   contents: write
 on:
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Release tag，禁止40位hash，例 v1.0.1
+        required: true
+        default: "build-$(date +%Y%m%d-%H%M)"
 
 jobs:
   build:
