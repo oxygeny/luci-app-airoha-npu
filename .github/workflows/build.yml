@@ -1,13 +1,12 @@
 name: 编译luci-app-airoha-npu (APK包)
 permissions:
-  contents: write
+  contents: read
 on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: Release tag，禁止40位hash，例 v1.0.1
+        description: Release tag
         required: true
-        default: "build-$(date +%Y%m%d-%H%M)"
 
 jobs:
   build:
@@ -35,23 +34,41 @@ jobs:
           ./scripts/feeds install -a
           make defconfig
 
-      - name: Compile luci-app
+      - name: Compile luci‑app
         run: |
           set -e
-          cd /opt/openwrt-sdk*
           make package/luci-app-airoha-npu/compile V=s
           APK_FILE=$(find . -name "luci-app-airoha-npu*.apk")
           if [ -z "$APK_FILE" ]; then
-            echo "::error::apk 编译产物缺失"
+            echo "::error::apk编译产物缺失"
             exit 1
           fi
-          echo "APK_FILE=${APK_FILE}" >> $GITHUB_ENV
-          echo "RELEASE_TAG=${{ github.event.inputs.release_tag }}" >> $GITHUB_ENV
+          echo "APK=$APK_FILE"
+          cp "$APK_FILE" ./luci-app-airoha-npu.apk
 
-      - name: Create GitHub Release
+      - name: Upload apk as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-apk
+          path: ./luci-app-airoha-npu.apk
+          retention-days: 7
+
+  release:
+    needs: build   # 必须等build完成才跑release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download artifact apk
+        uses: actions/download-artifact@v4
+        with:
+          name: build-apk
+          path: ./out
+
+      - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag_name: ${{ env.RELEASE_TAG }}
-          files: ${{ env.APK_FILE }}
+          tag_name: ${{ github.event.inputs.release_tag }}
           generate_release_notes: true
+          files: ./out/luci-app-airoha-npu.apk
