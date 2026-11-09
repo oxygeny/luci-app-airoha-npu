@@ -23,9 +23,9 @@ jobs:
         run: |
           cd /opt/openwrt-sdk*
           make package/luci-app-airoha-npu/compile V=s -j1
-          cd /opt/openwrt-sdk*/bin/packages/aarch64_generic/base
+          cd /opt/openwrt-sdk*/bin/packages/aarch64_cortex-a53/base
           ls
-          mv *.ipk luci-app-airoha-npu_all.ipk
+          mv luci-app-airoha-npu-*.apk luci-app-airoha-npu_all.apk
           echo "build_time=$(date '+%Y年%m月%d日%H:%M:%S' | jq -sRr @uri)" >> $GITHUB_ENV
           echo "tag=$(date '+%Y-%m-%d')" >> $GITHUB_ENV
       - name: 发布
@@ -42,5 +42,5 @@ jobs:
                部分固件无法启动，可以尝试设置数据目录为外置存储设备里
                
             tag_name: ${{ env.tag }}
-            files: /opt/openwrt-sdk*/bin/packages/aarch64_generic/base/*
+            files: /opt/openwrt-sdk*/bin/packages/aarch64_cortex-a53/base/*
      
