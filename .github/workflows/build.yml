@@ -26,9 +26,9 @@ jobs:
           wget -qO /opt/sdk.tar.zst https://downloads.openwrt.org/snapshots/targets/airoha/an7583/openwrt-sdk-airoha-an7583_gcc-14.4.0_musl.Linux-x86_64.tar.zst
           tar -I zstd -xf /opt/sdk.tar.zst -C /opt
           # 拉取luci源码
-          git clone -b oxygeny https://github.com/oxygeny/luci-app-airoha-npu.git /opt/npu-src
+          git clone -b oxygeny https://github.com/oxygeny/luci-app-airoha-npu.git /opt/luci-app-airoha-npu
           cd /opt/openwrt-sdk*/package
-          cp -R /opt/npu-src/luci-app-airoha-npu .
+          cp -R /opt/luci-app-airoha-npu .
           cd /opt/openwrt-sdk*
           ./scripts/feeds update -a
           ./scripts/feeds install -a
